@@ -9,7 +9,7 @@ it uses the terminal to display the board, and the stats are represented with:
 
 it started with a grid of 25 * 25 and a built glider at top left corner.
 
-to run clone it using:  
+to run the program, clone the repo using:  
 ```console
 git clone https://github.com/ibrahimois/conway-game-life.git
 ```
