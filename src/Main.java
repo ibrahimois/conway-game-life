@@ -16,16 +16,37 @@ the rules of the game of life is simple :
 public class Main {
 
     //This holds the grid size
-    public static final int gridLength = 25;
+//    public static final int gridLength = 25;
+    public static final int WIDTH = 130;
+    public static final int HEIGHT = 32;
+    public static final String OS = System.getProperty("os.name");
 
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
         //Here we create our board with a glider in place, a glider is a shape in the game you can check the previous link.
         //The glider is defined for 50 * 50 grid.
-        List<String> cols = IntStream.range(0, gridLength * gridLength)
-                .mapToObj(i -> (i == 1 || i == 27 || i == 50 || i == 51 || i == 52 ) ? "X" : "*")
+//        List<String> cols = IntStream.range(0, WIDTH * HEIGHT)
+//                .mapToObj(i -> (i == 1 || i == WIDTH + 2 || i == WIDTH * 2 || i == (WIDTH * 2) + 1 || i == (WIDTH * 2) + 2
+//                        || i == ((WIDTH * HEIGHT) / 2) + WIDTH / 2 || i == (((WIDTH * HEIGHT) / 2) + WIDTH / 2) + 1 || i == (((WIDTH * HEIGHT) / 2) + WIDTH / 2) + 2)  ? "X" : " ")
+//                .collect(Collectors.toList());
+
+        //glider gun
+        List<String> cols = IntStream.range(0, WIDTH * HEIGHT)
+                .mapToObj(i -> (
+                        i == (WIDTH) + 26 ||
+                        i == (WIDTH * 2) + 26 || i == (WIDTH * 2) + 24 ||
+                        i == (WIDTH * 3) + 22 || i == (WIDTH * 3) + 23 || i == (WIDTH * 3) + 36 || i == (WIDTH * 3) + 37 || i == (WIDTH * 3) + 14 || i == (WIDTH * 3) + 15 ||
+                        i == (WIDTH * 4) + 13 || i == (WIDTH * 4) + 17 || i == (WIDTH * 4) + 22 || i == (WIDTH * 4) + 23 || i == (WIDTH * 4) + 36 || i == (WIDTH * 4) + 37 ||
+                        i == (WIDTH * 5) + 12 || i == (WIDTH * 5) + 18 || i == (WIDTH * 5) + 22 || i == (WIDTH * 5) + 23 || i == (WIDTH * 5) + 2 || i == (WIDTH * 5) + 3 ||
+                        i == (WIDTH * 6) + 12 || i == (WIDTH * 6) + 16 || i == (WIDTH * 6) + 18 || i == (WIDTH * 6) + 19 || i == (WIDTH * 6) + 24 || i == (WIDTH * 6) + 26 ||
+                                i == (WIDTH * 6) + 2 || i == (WIDTH * 6) + 3 ||
+
+                        i == (WIDTH * 7) + 12 || i == (WIDTH * 7) + 18 || i == (WIDTH * 7) + 26 ||
+                        i == (WIDTH * 8) + 13 || i == (WIDTH * 8) + 17 ||
+                        i == (WIDTH * 9) + 14 || i == (WIDTH * 9) + 15)  ? "O" : " ")
                 .collect(Collectors.toList());
+
 
         //This loop will keep going and each iteration holds a generation.
         while (true) {
@@ -39,14 +60,14 @@ public class Main {
             for (int i = 0; i < cols.size(); i++) {
 
                 //Calculation happens in checkNeighbors method.
-                int numberNeighborsAlive = checkNeighbors(cols, i);
+                int numberNeighborsAlive = checkNeighbors(cols, i, looper -1);
 
                 //After getting number of neighbors for cell, we check if it's alive or dead.
                 //If it is alive we put into our map of possible changes.
                 //We apply a simple condition to not put data we wouldn't be using, for example if a cell is alive and doesn't satisfy the rules,
                 // no need to store it for later changes, also we can't change it here cause changes happen over generation and not on cell state
                 // at the moment.
-                if(cols.get(i).equalsIgnoreCase("X")){
+                if(cols.get(i).equalsIgnoreCase("O")){
                     if(numberNeighborsAlive != 2 && numberNeighborsAlive != 3) {
                         changes.put(i, cols.get(i));
                     }
@@ -57,11 +78,10 @@ public class Main {
                 }
 
                 //Since we are already looping throughout the board, might as well apply our looper divider for visual clearance.
-                if(looper == gridLength) {
-                    System.out.println();
+                if(looper == WIDTH) {
+                    System.out.println("██");
                     looper = 0;
-                }
-                looper++;
+                }                looper++;
             }
 
             //We loop throughout our changes and make them.
@@ -69,122 +89,129 @@ public class Main {
                     changes.keySet()) {
 
                 //Swap alive cells with dead ones, and swap dead ones with alive.
-                if(changes.get(key).equalsIgnoreCase("X")) {
-                    cols.set(key, "*");
+                if(changes.get(key).equalsIgnoreCase("O")) {
+                    cols.set(key, " ");
                 } else {
-                    cols.set(key, "X");
+                    cols.set(key, "O");
                 }
+            }
+            for(int i = 0; i < WIDTH + 3 ; i++) {
+            System.out.print("█");
             }
             Thread.sleep(150);
             //Generation reload terminal.
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")) {
+            if (OS.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
                 new ProcessBuilder("clear").inheritIO().start().waitFor();
             }
+            for (int i = 0; i < WIDTH + 4; i++) {
+            System.out.print("█");
+            }
+            System.out.println();
             //Add delay between iterations.
         }
     }
 
-    private static int checkNeighbors(List<String> cols, int i) {
+    private static int checkNeighbors(List<String> cols, int i, int looper) {
         List<String> neighbors = new ArrayList<>();
 
         if(i == 0) {
             topLeftCorner(cols, i, neighbors);
-        } else if (i == gridLength - 1) {
+        } else if (i == WIDTH - 1) {
             topRightCorner(cols, i, neighbors);
-        } else if (i == gridLength * (gridLength - 1)) {
+        } else if (i == (HEIGHT * WIDTH) - (WIDTH)) {
             bottomLeftCorner(cols, i, neighbors);
-        } else if (i == (gridLength * gridLength) - 1) {
+        } else if (i == (WIDTH * HEIGHT) - 1) {
             bottomRightCorner(cols, i, neighbors);
-        } else if (i < gridLength) {
+        } else if (i < WIDTH) {
             topEdge(cols, i, neighbors);
-        } else if (i % gridLength == 0) {
+        } else if (i % WIDTH == 0) {
             leftEdge(cols, i, neighbors);
-        } else if (i > gridLength * (gridLength - 1)) {
+        } else if (i > (HEIGHT * WIDTH) - (WIDTH)) {
             bottomEdge(cols, i, neighbors);
-        } else if (i % gridLength == gridLength - 1) {
+        } else if (i % WIDTH == WIDTH - 1) {
             rightEdge(cols, i, neighbors);
         } else {
             grid(cols, i, neighbors);
         }
         int aliveNeighborsCount = 0;
-        int looper = 1;
         for (String col :
                 neighbors) {
-            if(col.equalsIgnoreCase("X"))
+            if(col.equalsIgnoreCase("O"))
                 aliveNeighborsCount++;
+        }
+        if(looper == 0) {
+            System.out.print("██");
         }
         System.out.print(cols.get(i) + "");
         return aliveNeighborsCount;
     }
 
     private static void rightEdge(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength - 1));
-        neighbors.add(cols.get(i - gridLength));
+        neighbors.add(cols.get(i - WIDTH - 1));
+        neighbors.add(cols.get(i - WIDTH));
         neighbors.add(cols.get(i - 1));
-        neighbors.add(cols.get(i + gridLength - 1));
-        neighbors.add(cols.get(i + gridLength));
+        neighbors.add(cols.get(i + WIDTH - 1));
+        neighbors.add(cols.get(i + WIDTH));
     }
 
     private static void bottomEdge(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength - 1));
-        neighbors.add(cols.get(i - gridLength));
-        neighbors.add(cols.get(i - gridLength + 1));
+        neighbors.add(cols.get(i - WIDTH - 1));
+        neighbors.add(cols.get(i - WIDTH));
+        neighbors.add(cols.get(i - WIDTH + 1));
         neighbors.add(cols.get(i - 1));
         neighbors.add(cols.get(i + 1));
     }
 
     private static void leftEdge(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength));
-        neighbors.add(cols.get(i - gridLength + 1));
+        neighbors.add(cols.get(i - WIDTH));
+        neighbors.add(cols.get(i - WIDTH + 1));
         neighbors.add(cols.get(i + 1));
-        neighbors.add(cols.get(i + gridLength));
-        neighbors.add(cols.get(i + gridLength + 1));
+        neighbors.add(cols.get(i + WIDTH));
+        neighbors.add(cols.get(i + WIDTH + 1));
     }
 
     private static void bottomRightCorner(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength));
-        neighbors.add(cols.get(i - gridLength - 1));
+        neighbors.add(cols.get(i - WIDTH));
+        neighbors.add(cols.get(i - HEIGHT - 1));
         neighbors.add(cols.get(i - 1));
     }
 
     private static void bottomLeftCorner(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength));
-        neighbors.add(cols.get(i - gridLength + 1));
+        neighbors.add(cols.get(i - WIDTH));
+        neighbors.add(cols.get(i - WIDTH + 1));
         neighbors.add(cols.get(i + 1));
     }
 
     private static void topRightCorner(List<String> cols, int i, List<String> neighbors) {
         neighbors.add(cols.get(i - 1));
-        neighbors.add(cols.get(i + gridLength - 1));
-        neighbors.add(cols.get(i + gridLength));
+        neighbors.add(cols.get(i + WIDTH - 1));
+        neighbors.add(cols.get(i + WIDTH));
     }
 
     private static void topEdge(List<String> cols, int i, List<String> neighbors) {
         neighbors.add(cols.get(i - 1));
         neighbors.add(cols.get(i + 1));
-        neighbors.add(cols.get(i + gridLength - 1));
-        neighbors.add(cols.get(i + gridLength));
-        neighbors.add(cols.get(i + gridLength + 1));
+        neighbors.add(cols.get(i + WIDTH - 1));
+        neighbors.add(cols.get(i + WIDTH));
+        neighbors.add(cols.get(i + WIDTH + 1));
     }
 
     private static void topLeftCorner(List<String> cols, int i, List<String> neighbors) {
         neighbors.add(cols.get(i + 1));
-        neighbors.add(cols.get(i + gridLength));
-        neighbors.add(cols.get(i + gridLength + 1));
+        neighbors.add(cols.get(i + WIDTH));
+        neighbors.add(cols.get(i + WIDTH + 1));
     }
 
     private static void grid(List<String> cols, int i, List<String> neighbors) {
-        neighbors.add(cols.get(i - gridLength - 1));
-        neighbors.add(cols.get(i - gridLength ));
-        neighbors.add(cols.get(i - gridLength + 1));
+        neighbors.add(cols.get(i - WIDTH - 1));
+        neighbors.add(cols.get(i - WIDTH ));
+        neighbors.add(cols.get(i - WIDTH + 1));
         neighbors.add(cols.get(i - 1));
         neighbors.add(cols.get(i + 1));
-        neighbors.add(cols.get(i + gridLength - 1));
-        neighbors.add(cols.get(i + gridLength ));
-        neighbors.add(cols.get(i + gridLength + 1));
+        neighbors.add(cols.get(i + WIDTH - 1));
+        neighbors.add(cols.get(i + WIDTH ));
+        neighbors.add(cols.get(i + WIDTH + 1));
     }
 }
