@@ -95,7 +95,7 @@ public class Main {
                     cols.set(key, "O");
                 }
             }
-            for(int i = 0; i < WIDTH + 3 ; i++) {
+            for(int i = 0; i < WIDTH + 4 ; i++) {
             System.out.print("█");
             }
             Thread.sleep(150);
