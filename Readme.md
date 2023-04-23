@@ -1,6 +1,11 @@
 # Game of Life
+<div align="center">
 
-![Preview image](https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif)
+![Preview image](https://media.tenor.com/hpxLtJ8H5tsAAAAd/glider-gun-game-of-life.gif)
+
+
+
+</div>
 
 This is a java program for the Conway's Game of life
 it uses the terminal to display the board.
