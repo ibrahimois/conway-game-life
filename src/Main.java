@@ -17,8 +17,8 @@ public class Main {
 
     //This holds the grid size
 //    public static final int gridLength = 25;
-    public static final int WIDTH = 130;
-    public static final int HEIGHT = 32;
+    public static final int WIDTH = 110;
+    public static final int HEIGHT = 28;
     public static final String OS = System.getProperty("os.name");
 
 
