@@ -103,7 +103,7 @@ public class Main {
             if (OS.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                new ProcessBuilder("clear").inheritIO().start().waitFor();
+                new ProcessBuilder("reset").inheritIO().start().waitFor();
             }
             for (int i = 0; i < WIDTH + 4; i++) {
             System.out.print("█");
